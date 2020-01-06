@@ -1,0 +1,89 @@
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        s = list(s)
+        n = len(s)
+        #print(s)
+        
+        # 翻转数组
+        def reverse(s, i, j):
+            while i < j:
+                s[i], s[j] = s[j], s[i]
+                i += 1
+                j -= 1
+
+        # 翻转单个单词
+        def word_reverse(s):
+            # 用双指针找到一个单词
+            i = 0
+            j = 0
+            while i < n:
+                # 找到一个单词首字母
+                while i < n and s[i] == " ":
+                    i += 1
+                j = i
+                # 找到一个单词末位置
+                while j < n and s[j] != " ":
+                    j += 1
+                reverse(s, i, j - 1)
+                i = j
+
+        # 清除多余空格
+        def clean_space(s):
+            i = 0
+            j = 0
+            while j < n:
+                # 找到一个单词
+                while j < n and s[j] == " ":
+                    j += 1
+                # 单词朝前移
+                while j < n and s[j] != " ":
+                    s[i] = s[j]
+                    i += 1
+                    j += 1
+                # 移动下一个单词
+                while j < n and s[j] == " ":
+                    j += 1
+                if j < n:
+                    s[i] = " "
+                    i += 1
+            return "".join(s[:i])
+
+        reverse(s, 0, n - 1)
+        #print(s)
+        word_reverse(s)
+        #print(s)
+        return clean_space(s)
+
+#利用正则表达式读取以空格分隔的字符串，然后再反向依次连接各个字符串。
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        import re
+        str1 = re.findall(r'\S+',s)
+        if len(str1) == 0:
+            return ''
+        str1 = str1[::-1]
+        str2 = ''
+        for i in range(len(str1)-1):
+            str2 += (str1[i] + ' ')
+        return str2 + str1[-1]
+
+#先处理字符串，将首尾空格都删除；
+#倒序遍历字符串，当第一次遇到空格时，添加s[i + 1: j]（即添加一个完整单词）；
+#然后，将直至下一个单词中间的空格跳过，并记录下一个单词尾部j；
+#继续遍历，直至下一次遇到第一个空格，回到1.步骤；
+#由于首部没有空格，因此最后需要将第一个单词加入，再return。
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        s = s.strip()
+        res = ""
+        i, j = len(s) - 1, len(s)
+        while i > 0:
+            if s[i] == ' ':
+                res += s[i + 1: j] + ' '
+                while s[i] == ' ': i -= 1
+                j = i + 1
+            i -= 1
+        return res + s[:j]
+
+
+
